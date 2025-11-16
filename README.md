@@ -1,5 +1,6 @@
 # EAS 3610 Intro Geophysics TDEM Lab 2025
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/mchristoffersen/tdem_lab_2025/HEAD?urlpath=%2Fdoc%2Ftree%2Ftdem_inversion.ipynb)
+
 Run this lab with Binder (link above) or locally.
 
 > [!WARNING]
