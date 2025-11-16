@@ -19,6 +19,13 @@ import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline as iuSpline
 from scipy.special import roots_legendre
 
+def split_x(x):
+    # Split inversion parameter vector into resistivities and thicknesses
+    nlyr = (len(x)+1)//2
+    res = x[:nlyr]
+    thk = x[nlyr:]
+    return res, thk
+
 def strat_plot(thick, res, hatches=['/', '\\', '|', '-', '+', 'x', 'o', 'O', '.', '*'], vmin=0, vmax=500, cmap="RdBu", colors=None, labels=None):
     """Utility function to plot a resistivity column."""
     thick = thick[:]
@@ -177,7 +184,7 @@ def get_time(time, r_time):
     return np.logspace(tmin, tmax, time.size + 2)
 
 
-def walktem(res, depth, off_times, tx_waveform, tx_side):
+def walktem(res, thick, off_times, tx_waveform, tx_side):
     """Custom wrapper of empymod.model.bipole.
 
     Here, we compute WalkTEM data using the ``empymod.model.bipole`` routine as
@@ -205,7 +212,7 @@ def walktem(res, depth, off_times, tx_waveform, tx_side):
         Resistivities of the resistivity model (see ``empymod.model.bipole``
         for more info.)
 
-    depth : ndarray
+    thick : ndarray
         Depths of the resistivity model (see ``empymod.model.bipole`` for more
         info.)
 
@@ -229,6 +236,9 @@ def walktem(res, depth, off_times, tx_waveform, tx_side):
     # Add extra off_time to pad response
     off_times = np.append(off_times, off_times[-1] + (off_times[-1]-off_times[-2]))
 
+    # Thickness -> depth
+    depth = np.cumsum(thick)
+    
     # === GET REQUIRED TIMES ===
     time = get_time(off_times, tx_waveform["t"])
 
